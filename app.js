@@ -1057,6 +1057,7 @@ var ANTAGONISTS = {
   },
 };
 function calculate() {
+  try {
   const name = document.getElementById('patient-name').value.trim() || 'Paciente';
   const weightKg = getWeightKg();
   const weightLb = getWeightLb();
@@ -1179,6 +1180,9 @@ function calculate() {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-results').classList.add('active');
+  } catch(e) {
+    alert('Error al calcular: ' + e.message + '\nLínea: ' + e.lineNumber);
+  }
 }
 
 function renderResult(r, idx) {

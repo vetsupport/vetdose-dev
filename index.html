@@ -703,80 +703,40 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 
 <script src="app.js"></script>
 
-<!-- LOGIN / REGISTRO -->
-<div id="reg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:16px">
-
-  <!-- PANTALLA DE REGISTRO (primera vez) -->
-  <div id="register-screen" style="display:none;background:#fff;border-radius:16px;padding:28px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-    <div style="text-align:center;margin-bottom:20px">
-      <img src="icon-logo.png" style="height:48px;margin-bottom:10px">
+<!-- REGISTRO (MOD-037) -->
+<div id="reg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;padding:24px 20px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto">
+    <div style="text-align:center;margin-bottom:14px">
+      <img src="icon-logo.png" style="height:44px;margin-bottom:8px">
       <div style="font-size:20px;font-weight:800;color:#1a5c38">Bienvenido a VetDose 2.0</div>
-      <div style="font-size:11px;color:#888;margin-top:4px">Crea tu cuenta para continuar</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;line-height:1.5">No hay una gran corporación detrás — solo un veterinario con deseos de mejorar la clínica diaria.</div>
     </div>
-
-    <!-- Título -->
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:6px">Título</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:6px">Título *</div>
+      <div style="display:flex;gap:8px">
+        <button id="reg-btn-dr" onclick="selectTitle('Dr.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #1a5c38;background:#1a5c38;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Dr.</button>
+        <button id="reg-btn-dra" onclick="selectTitle('Dra.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #ddd;background:#fff;color:#666;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Dra.</button>
+      </div>
+      <input type="hidden" id="reg-title" value="Dr.">
+    </div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button id="reg-btn-dr" onclick="selectTitle('Dr.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #1a5c38;background:#1a5c38;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Dr.</button>
-      <button id="reg-btn-dra" onclick="selectTitle('Dra.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #ddd;background:#fff;color:#666;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Dra.</button>
+      <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Nombre *</div>
+        <input type="text" id="reg-nombre" placeholder="Juan" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
+      <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Apellido *</div>
+        <input type="text" id="reg-apellido" placeholder="Pérez" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
     </div>
-    <input type="hidden" id="reg-title" value="Dr.">
-
-    <!-- Nombre completo -->
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Nombre completo *</div>
-    <input type="text" id="reg-nombre" placeholder="Ej: Yenen Villasmil"
-      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px">
-
-    <!-- Credencial -->
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Credencial</div>
-    <input type="text" id="reg-credencial" placeholder="Ej: DVM, MVZ, MV..."
-      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px">
-
-    <!-- Usuario -->
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Usuario *</div>
-    <input type="text" id="reg-username" placeholder="Ej: yenenvil" autocomplete="off" autocapitalize="none"
-      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:4px">
-    <div style="font-size:11px;color:#e67e22;font-weight:600;margin-bottom:10px">⚠ Su usuario NO es su correo electrónico</div>
-
-    <!-- Contraseña -->
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña *</div>
-    <input type="password" id="reg-pwd" placeholder="Contraseña de acceso"
-      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
-      onkeydown="if(event.key==='Enter')submitRegistration()">
-
-    <div id="reg-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
-    <button onclick="submitRegistration()"
-      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
-      Crear cuenta y entrar →
-    </button>
-    <div style="text-align:center;margin-top:12px;font-size:11px;color:#888">
-      ¿Ya tienes cuenta? <span onclick="showLoginScreen()" style="color:#1a5c38;font-weight:700;cursor:pointer">Iniciar sesión</span>
-    </div>
-    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
+    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Correo electrónico *</div>
+      <input type="email" id="reg-email" placeholder="dr@clinica.com" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
+    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">País *</div>
+      <input type="text" id="reg-pais" placeholder="USA, Venezuela, Colombia..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
+    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Clínica</div>
+      <input type="text" id="reg-clinica" placeholder="Banfield, VCA..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
+    <div style="margin-bottom:18px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Teléfono</div>
+      <input type="tel" id="reg-telefono" placeholder="(305) 555-1234" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
+    <div id="reg-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:10px;text-align:center"></div>
+    <button onclick="submitRegistration()" style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Acceder a VetDose →</button>
+    <div style="text-align:center;margin-top:10px;font-size:10px;color:#999">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
   </div>
-
-  <!-- PANTALLA DE LOGIN (veces siguientes) -->
-  <div id="login-screen" style="display:none;background:#fff;border-radius:16px;padding:32px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-    <div style="text-align:center;margin-bottom:24px">
-      <img src="icon-logo.png" style="height:52px;margin-bottom:12px">
-      <div style="font-size:22px;font-weight:800;color:#1a5c38">VetDose 2.0</div>
-      <div style="font-size:12px;color:#888;margin-top:4px">Bienvenido, <b id="login-username-display" style="color:#1a5c38"></b></div>
-    </div>
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña</div>
-    <input type="password" id="login-pwd" placeholder="Contraseña de acceso"
-      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:16px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
-      onkeydown="if(event.key==='Enter')submitLogin()">
-    <div id="login-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
-    <button onclick="submitLogin()"
-      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
-      Entrar →
-    </button>
-    <div style="text-align:center;margin-top:12px;font-size:11px;color:#888">
-      ¿Usuario nuevo? <span onclick="switchToRegister()" style="color:#1a5c38;font-weight:700;cursor:pointer">Crear cuenta</span>
-    </div>
-    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
-  </div>
-
 </div>
 
 <!-- PERFIL -->

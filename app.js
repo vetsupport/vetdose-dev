@@ -525,7 +525,7 @@ function smartTabletOptions(totalMg, drugId, formType, tabSizesOverride, doseMin
 
   var sorted = Array.from(candidates.entries()).sort(function(a, b) { return a[0] - b[0]; });
 
-  // Fallback: nothing in range — show closest BELOW and closest ABOVE with warning
+  // Fallback: nothing in range — show simplest closest BELOW and simplest closest ABOVE
   if (!sorted.length) {
     var all = [];
     sizes.forEach(function(sz) {
@@ -540,9 +540,16 @@ function smartTabletOptions(totalMg, drugId, formType, tabSizesOverride, doseMin
         all.push({ mg: parseFloat((sizes[j]+sizes[i]*0.5).toFixed(4)), label: '1 '+unit+' '+sizes[j]+'mg + 0.5 '+unit+' '+sizes[i]+'mg', score: 4 });
       }
     }
-    all.sort(function(a,b){ return a.mg-b.mg; });
-    var below = all.filter(function(x){ return x.mg < mgMin; });
-    var above = all.filter(function(x){ return x.mg > mgMax; });
+    // Deduplicate by mg: keep simplest (lowest score) at each mg value
+    var deduped = new Map();
+    all.forEach(function(x) {
+      if (!deduped.has(x.mg) || x.score < deduped.get(x.mg).score)
+        deduped.set(x.mg, x);
+    });
+    var allClean = Array.from(deduped.values()).sort(function(a,b){ return a.mg-b.mg; });
+    // Find closest below (highest mg < mgMin) and closest above (lowest mg > mgMax)
+    var below = allClean.filter(function(x){ return x.mg < mgMin; });
+    var above = allClean.filter(function(x){ return x.mg > mgMax; });
     var opts = [];
     if (below.length) opts.push(below[below.length-1].label + ' ⚠ bajo rango');
     if (above.length) opts.push(above[0].label + ' ⚠ sobre rango');

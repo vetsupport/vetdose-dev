@@ -55,7 +55,7 @@ var SEED_DRUGS = [
   { id: 'fludrocortisona', generic: 'Fludrocortisona', trade: 'Florinef', conc: 0.1, tabSizes: [0.1], doseMin: 0.01, doseMax: 0.02, dosePref: 0.01, unit: 'mg/kg', route: 'PO', category: 'endocrine', formType: 'tablet', calcMode: 'standard', notes: 'Addison; mineralocorticoide + efecto glucocorticoide.', source: 'Plumb 2024; Papich 2020', frequency: 'SID', frequencies: ['SID', 'BID'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'furosemida', generic: 'Furosemida', trade: 'Lasix', conc: 50, doseMin: 2.0, doseMax: 4.0, dosePref: 2.0, unit: 'mg/kg', route: 'IV, IM, SQ, PO', category: 'cardiac/diuretic', formType: 'injection', calcMode: 'standard', notes: 'Dosis depende de edema pulmonar agudo vs mantenimiento; monitorear renal/electrolitos.', source: 'Plumb 2024; Papich 2020', frequency: 'BID', frequencies: ['SID', 'BID', 'TID'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'gabapentina', generic: 'Gabapentina', trade: 'Neurontin', conc: 100, tabSizes: [100,300,600], doseMin: 5.0, doseMax: 40.0, dosePref: 10.0, unit: 'mg/kg', route: 'PO', category: 'analgesic/neurologic', formType: 'capsule', calcMode: 'standard', notes: 'Dolor neuropático/ansiedad; sedación. Ajustar en enfermedad renal.', source: 'Plumb 2024; Papich 2020', frequency: 'TID', frequencies: ['BID', 'TID'], validationStatus: 'Revisión preliminar; validar por usuario' },
-  { id: 'gentamicina', generic: 'Gentamicina', trade: 'Gentocin', conc: 50, doseMin: 9.0, doseMax: 14.0, dosePref: 6.0, unit: 'mg/kg', route: 'IV, IM, SQ', category: 'antibiotic', formType: 'injection', calcMode: 'standard', notes: 'Nefro/ototóxica. Requiere hidratación y monitoreo renal; ideal TDM.', source: 'Plumb 2024; Papich 2020', frequency: 'SID', frequencies: ['SID'], validationStatus: 'Revisión preliminar; validar por usuario' },
+  { id: 'gentamicina', generic: 'Gentamicina', trade: 'Gentocin', conc: 50, doseMin: 9.0, doseMax: 14.0, dosePref: 9.0, unit: 'mg/kg', route: 'IV, IM, SQ', category: 'antibiotic', formType: 'injection', calcMode: 'standard', notes: 'Nefro/ototóxica. Requiere hidratación y monitoreo renal; ideal TDM.', source: 'Plumb 2024; Papich 2020', frequency: 'SID', frequencies: ['SID'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'gluconato_de_calcio', generic: 'Gluconato de calcio', trade: 'Calcium gluconate', conc: 100, doseMin: 50.0, doseMax: 100.0, dosePref: 50.0, unit: 'mg/kg', route: 'IV lento', category: 'emergency/electrolyte', formType: 'injection', calcMode: 'standard', notes: 'ECG durante administración. Hipocalcemia/hiperkalemia.', source: 'Plumb 2024; Papich 2020', frequency: 'única lento', frequencies: ['única lento'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'grapiprant', generic: 'Grapiprant', trade: 'Galliprant', conc: 20, tabSizes: [20,60,100], doseMin: 2.0, doseMax: 2.0, dosePref: 2.0, unit: 'mg/kg', route: 'PO', category: 'nsaid/EP4 antagonist', formType: 'tablet', calcMode: 'standard', notes: 'Solo perros. Dolor osteoartrítico.', source: 'Plumb 2024; Papich 2020', frequency: 'SID', frequencies: ['SID'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'gs441524', generic: 'GS-441524', trade: 'Mutian / Ativinix / otros', conc: 15.0, doseMin: 4.0, doseMax: 20.0, dosePref: 15.0, unit: 'mg/kg', route: 'SQ, PO', category: 'antiviral', formType: 'liquid_oral', calcMode: 'standard', notes: 'FIP felina (Peritonitis Infecciosa Felina). Dosis varía: seca/ocular 4-6 mg/kg SQ SID; neurológica/húmeda 6-12 mg/kg. Protocolo mínimo 42 días (protocolo actual; antes 84 días). Monitorear ALT, proteínas, PCV. Actualmente en proceso de aprobación FDA.', source: 'Pedersen et al. 2019; Risks & Benefits Study 2022; Plumb 2024', frequency: 'SID', frequencies: ['SID', 'BID'], validationStatus: 'Revisión preliminar; validar por usuario' },
@@ -187,7 +187,7 @@ var SEED_DRUGS = [
     notes: 'Perros: 5 mg/kg q6-8h PO; eficacia analgésica variable. Gatos: 2-4 mg/kg q8-12h PO; producen más metabolito activo. Controlado Schedule IV. No mezclar con IMAO.',
     source: 'Papich 5th Ed. p.922', validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'pimobendan', generic: 'Pimobendan', trade: 'Vetmedin', conc: 1.25,
-    doseMin: 0.25, doseMax: 0.3, dosePref: 0.25, unit: 'mg/kg',
+    doseMin: 0.2, doseMax: 0.3, dosePref: 0.25, unit: 'mg/kg',
     route: 'PO', category: 'cardiac', formType: 'tablet',
     calcMode: 'standard', tabSizes: [1.25, 2.5, 5],
     doseDog: 0.25, doseCat: 0.0,
@@ -488,62 +488,78 @@ var TABLET_SIZES = {
 function smartTabletOptions(totalMg, drugId, formType, tabSizesOverride, doseMin, doseMax, weightKg) {
   var sizes = tabSizesOverride || TABLET_SIZES[drugId] || null;
   var unit = formType === 'capsule' ? 'cáps.' : 'tab.';
-  if (!sizes || !sizes.length) return [totalMg.toFixed(1) + ' mg'];
-  var sorted = sizes.slice().sort(function(a,b){return a-b;});
-  var mults = [0.5, 1, 1.5, 2];
+  if (!sizes || !sizes.length) return [''];
+
   var mgMin = (doseMin && weightKg) ? doseMin * weightKg : totalMg * 0.8;
   var mgMax = (doseMax && weightKg) ? doseMax * weightKg : totalMg * 1.2;
 
-  function sc(combo) {
-    var s=0;
-    combo.forEach(function(p){var m=p[0];if(m===1)s+=1;else if(m===2)s+=2;else if(m===0.5)s+=3;else s+=4;});
-    return s + combo.length * 0.1;
-  }
-  function lb(m, sz) {
-    return (m===0.5?'0.5':m===1?'1':m===1.5?'1.5':'2') + ' ' + unit + ' ' + sz + 'mg';
+  // Candidate map: mg total -> {label, score}
+  // Score: 1=1 whole, 2=0.5 tab, 3=2 wholes or 2 same, 4=whole+half diff, 5=1.5 same
+  var candidates = new Map();
+  function add(mg, label, sc) {
+    mg = parseFloat(mg.toFixed(4));
+    if (mg < mgMin || mg > mgMax) return;
+    if (!candidates.has(mg) || sc < candidates.get(mg).score)
+      candidates.set(mg, { label: label, score: sc });
   }
 
-  var C = new Map();
-  sorted.forEach(function(sz) {
-    mults.forEach(function(m) {
-      var mg = parseFloat((sz*m).toFixed(4)), sv = sc([[m,sz]]);
-      if (!C.has(mg)||sv<C.get(mg).score) C.set(mg,{score:sv,label:lb(m,sz)});
-    });
+  // Single tablet combinations
+  sizes.forEach(function(sz) {
+    add(sz,       '1 ' + unit + ' ' + sz + 'mg',   1);
+    add(sz * 0.5, '0.5 ' + unit + ' ' + sz + 'mg', 2);
+    add(sz * 2,   '2 ' + unit + ' ' + sz + 'mg',   3);
+    add(sz * 1.5, '1.5 ' + unit + ' ' + sz + 'mg', 5);
   });
-  for (var i=0; i<sorted.length; i++) {
-    for (var j=i; j<sorted.length; j++) {
-      mults.forEach(function(m1) {
-        mults.forEach(function(m2) {
-          if (i===j && m2<m1) return;
-          var mg = parseFloat((sorted[i]*m1+sorted[j]*m2).toFixed(4));
-          var sv = sc([[m1,sorted[i]],[m2,sorted[j]]]);
-          if (!C.has(mg)||sv<C.get(mg).score) C.set(mg,{score:sv,label:lb(m1,sorted[i])+' + '+lb(m2,sorted[j])});
-        });
-      });
+
+  // Two different tablet sizes (whole+whole, whole+half — NO half+half cross-size)
+  for (var i = 0; i < sizes.length; i++) {
+    for (var j = i + 1; j < sizes.length; j++) {
+      add(sizes[i] + sizes[j],
+          '1 ' + unit + ' ' + sizes[i] + 'mg + 1 ' + unit + ' ' + sizes[j] + 'mg', 3);
+      add(sizes[i] + sizes[j] * 0.5,
+          '1 ' + unit + ' ' + sizes[i] + 'mg + 0.5 ' + unit + ' ' + sizes[j] + 'mg', 4);
+      add(sizes[j] + sizes[i] * 0.5,
+          '1 ' + unit + ' ' + sizes[j] + 'mg + 0.5 ' + unit + ' ' + sizes[i] + 'mg', 4);
     }
   }
 
-  // STRICT: only options within [mgMin, mgMax]
-  var inRange = Array.from(C.entries())
-    .filter(function(e){ return e[0]>=mgMin && e[0]<=mgMax; })
-    .sort(function(a,b){ return a[0]-b[0]; });
+  var sorted = Array.from(candidates.entries()).sort(function(a, b) { return a[0] - b[0]; });
 
-  if (!inRange.length) {
-    // Fallback: closest option AT OR ABOVE mgMin
-    var above = Array.from(C.entries())
-      .filter(function(e){ return e[0]>=mgMin; })
-      .sort(function(a,b){ return a[0]-b[0]; });
-    return above.length ? [above[0][1].label] : [totalMg.toFixed(1)+' mg'];
+  // Fallback: nothing in range — take smallest option >= mgMin
+  if (!sorted.length) {
+    var all = [];
+    sizes.forEach(function(sz) {
+      all.push({ mg: sz, label: '1 ' + unit + ' ' + sz + 'mg' });
+      all.push({ mg: sz * 0.5, label: '0.5 ' + unit + ' ' + sz + 'mg' });
+    });
+    all.sort(function(a, b) { return a.mg - b.mg; });
+    var fb = all.filter(function(x) { return x.mg >= mgMin; });
+    return fb.length ? [fb[0].label] : [totalMg.toFixed(1) + ' mg'];
   }
 
-  // Pick best 5: min, max, and 3 simplest in middle
-  var picks = inRange.length<=5 ? inRange :
-    [inRange[0]].concat(
-      inRange.slice(1,-1).sort(function(a,b){return a[1].score-b[1].score;}).slice(0,3)
-        .sort(function(a,b){return a[0]-b[0];}),
-      [inRange[inRange.length-1]]
-    );
-  return picks.map(function(e){ return e[1].label; });
+  // Keep max 5: min, up to 3 simplest middle, max
+  var options;
+  if (sorted.length <= 5) {
+    options = sorted;
+  } else {
+    var middle = sorted.slice(1, -1)
+      .sort(function(a, b) { return a[1].score - b[1].score; })
+      .slice(0, 3)
+      .sort(function(a, b) { return a[0] - b[0]; });
+    options = [sorted[0]].concat(middle, [sorted[sorted.length - 1]]);
+  }
+
+  // Default index = simplest option (lowest score)
+  var minScore = Math.min.apply(null, options.map(function(o) { return o[1].score; }));
+  var defaultIdx = options.findIndex(function(o) { return o[1].score === minScore; });
+
+  // Return array with default first, rest after — caller uses [0] as primary display
+  var labels = options.map(function(o) { return o[1].label; });
+  if (defaultIdx > 0) {
+    var def = labels.splice(defaultIdx, 1)[0];
+    labels.unshift(def);
+  }
+  return labels;
 }
 
 function calcBSA(weightKg, species) {
@@ -1246,12 +1262,20 @@ function renderResult(r, idx) {
       </div>
     </div>` : '';
 
+  // Header: Clavamox (Amoxicilina + Ácido Clavulánico) / Requerido: Xmg – Ymg
+  const wkg = getWeightKg();
+  const mgMin = (r.doseMin && wkg) ? (r.doseMin * wkg).toFixed(1) : null;
+  const mgMax = (r.doseMax && wkg) ? (r.doseMax * wkg).toFixed(1) : null;
+  const mgRangeHTML = (isSolid && mgMin && mgMax && mgMin !== mgMax)
+    ? `<div style="font-size:11px;color:#a7f3d0;margin-top:3px;font-family:var(--mono)">Requerido: ${mgMin}–${mgMax} mg</div>`
+    : '';
+
   return `
     <div class="result-card" id="result-card-${idx}">
       <div class="result-header">
         <div class="result-names">
-          <div class="result-generic">${r.generic}</div>
-          <div class="result-trade">${r.trade}</div>
+          <div class="result-generic">${r.trade} <span style="font-size:13px;font-weight:500;opacity:.85">(${r.generic})</span></div>
+          ${mgRangeHTML}
         </div>
         <div class="result-dose" style="font-size:${isSolid||isFixed ? '17px':'24px'}">${mainDisplay}</div>
       </div>

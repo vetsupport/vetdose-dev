@@ -2603,11 +2603,17 @@ function checkRegistration() {
     } catch(e) {}
     return;
   }
-  if (user) {
-    showLoginScreen();
-  } else {
-    showRegisterScreen();
-  }
+  // Siempre mostrar login primero
+  showLoginScreen();
+}
+
+function showLoginScreen() {
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'flex';
+  var ls = document.getElementById('login-screen');
+  var rs = document.getElementById('register-screen');
+  if (rs) rs.style.display = 'none';
+  if (ls) ls.style.display = 'block';
 }
 
 function showRegisterScreen() {
@@ -2619,20 +2625,6 @@ function showRegisterScreen() {
   if (rs) rs.style.display = 'block';
 }
 
-function showLoginScreen() {
-  var o = document.getElementById('reg-overlay');
-  if (o) o.style.display = 'flex';
-  var ls = document.getElementById('login-screen');
-  var rs = document.getElementById('register-screen');
-  if (rs) rs.style.display = 'none';
-  if (ls) ls.style.display = 'block';
-  try {
-    var u = JSON.parse(localStorage.getItem('vetdose_user'));
-    var el = document.getElementById('login-username-display');
-    if (el && u && u.username) el.textContent = u.username;
-  } catch(e) {}
-}
-
 function selectTitle(t) {
   var h = document.getElementById('reg-title');
   if (h) h.value = t;
@@ -2642,6 +2634,36 @@ function selectTitle(t) {
   if (!b || !c) return;
   b.style.background = a ? '#1a5c38' : '#fff'; b.style.color = a ? '#fff' : '#666'; b.style.borderColor = a ? '#1a5c38' : '#ddd';
   c.style.background = !a ? '#1a5c38' : '#fff'; c.style.color = !a ? '#fff' : '#666'; c.style.borderColor = !a ? '#1a5c38' : '#ddd';
+}
+
+function submitLogin() {
+  var username = ((document.getElementById('login-username-input') || {}).value || '').trim().toLowerCase();
+  var pwd = ((document.getElementById('login-pwd') || {}).value || '').trim();
+  var er = document.getElementById('login-error');
+  if (!username) { er.textContent = 'Ingresa tu usuario.'; er.style.display = 'block'; return; }
+  if (pwd !== VETDOSE_PWD) { er.textContent = 'Contraseña incorrecta.'; er.style.display = 'block'; (document.getElementById('login-pwd')||{}).value = ''; return; }
+  // Verify username exists
+  try {
+    var stored = JSON.parse(localStorage.getItem('vetdose_user') || '{}');
+    if (stored.username && stored.username !== username) {
+      er.textContent = 'Usuario no encontrado. ¿Primera vez? Crea tu cuenta.';
+      er.style.display = 'block';
+      return;
+    }
+  } catch(e) {}
+  er.style.display = 'none';
+  localStorage.setItem('vetdose_auth', 'ok');
+  try {
+    var u = JSON.parse(localStorage.getItem('vetdose_user') || '{}');
+    if (u.displayName) {
+      var s = getSettings();
+      s.doctorName = u.displayName;
+      localStorage.setItem('vetdose_settings', JSON.stringify(s));
+    }
+  } catch(e) {}
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'none';
+  updateDrName();
 }
 
 function submitRegistration() {
@@ -2668,35 +2690,18 @@ function submitRegistration() {
   updateDrName();
 }
 
-function submitLogin() {
-  var pwd = (document.getElementById('login-pwd') || {value:''}).value.trim();
-  var er = document.getElementById('login-error');
-  if (pwd !== VETDOSE_PWD) {
-    er.textContent = 'Contraseña incorrecta.';
-    er.style.display = 'block';
-    (document.getElementById('login-pwd') || {}).value = '';
-    return;
-  }
-  er.style.display = 'none';
-  localStorage.setItem('vetdose_auth', 'ok');
-  try {
-    var u = JSON.parse(localStorage.getItem('vetdose_user'));
-    if (u && u.displayName) {
-      var s = getSettings();
-      s.doctorName = u.displayName;
-      localStorage.setItem('vetdose_settings', JSON.stringify(s));
-    }
-  } catch(e) {}
-  var o = document.getElementById('reg-overlay');
-  if (o) o.style.display = 'none';
-  updateDrName();
-}
-
 function switchToRegister() {
   var ls = document.getElementById('login-screen');
   var rs = document.getElementById('register-screen');
   if (ls) ls.style.display = 'none';
   if (rs) rs.style.display = 'block';
+}
+
+function logoutVetDose() {
+  if (!confirm('¿Cerrar sesión? El próximo usuario deberá ingresar sus credenciales.')) return;
+  localStorage.removeItem('vetdose_auth');
+  closeSettings();
+  showLoginScreen();
 }
 
 // ─── PERFILES ─────────────────────────────────────────────────────────────────

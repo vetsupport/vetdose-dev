@@ -672,6 +672,13 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
     <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
       <button class="btn btn-version" onclick="closeSettings();showChangelog()">VetDose 2.0 &mdash; Ver novedades</button>
     </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
+      <button class="btn" onclick="logoutVetDose()" style="width:100%;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+        🔓 Cerrar sesión
+      </button>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Otro usuario podrá iniciar sesión en este dispositivo</div>
+    </div>
   </div>
 </div>
 
@@ -707,12 +714,38 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 <!-- LOGIN / REGISTRO -->
 <div id="reg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:16px">
 
-  <!-- PANTALLA DE REGISTRO (primera vez) -->
+  <!-- PANTALLA DE LOGIN (pantalla principal — siempre se ve primero) -->
+  <div id="login-screen" style="display:none;background:#fff;border-radius:16px;padding:32px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:24px">
+      <img src="icon-logo.png" style="height:52px;margin-bottom:12px">
+      <div style="font-size:22px;font-weight:800;color:#1a5c38">VetDose 2.0</div>
+      <div style="font-size:12px;color:#888;margin-top:4px">Ingrese sus credenciales para continuar</div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Usuario</div>
+    <input type="text" id="login-username-input" placeholder="Ej: yenenvil" autocomplete="off" autocapitalize="none"
+      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
+      onkeydown="if(event.key==='Enter')document.getElementById('login-pwd').focus()">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña</div>
+    <input type="password" id="login-pwd" placeholder="Contraseña de acceso"
+      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
+      onkeydown="if(event.key==='Enter')submitLogin()">
+    <div id="login-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
+    <button onclick="submitLogin()"
+      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+      Entrar →
+    </button>
+    <div style="text-align:center;margin-top:14px;font-size:11px;color:#888">
+      ¿Primera vez? <span onclick="switchToRegister()" style="color:#1a5c38;font-weight:700;cursor:pointer">Crear cuenta</span>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
+  </div>
+
+  <!-- PANTALLA DE REGISTRO (solo primera vez) -->
   <div id="register-screen" style="display:none;background:#fff;border-radius:16px;padding:28px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
     <div style="text-align:center;margin-bottom:20px">
       <img src="icon-logo.png" style="height:48px;margin-bottom:10px">
-      <div style="font-size:20px;font-weight:800;color:#1a5c38">Bienvenido a VetDose 2.0</div>
-      <div style="font-size:11px;color:#888;margin-top:4px">Crea tu cuenta para continuar</div>
+      <div style="font-size:20px;font-weight:800;color:#1a5c38">Crear cuenta</div>
+      <div style="font-size:11px;color:#888;margin-top:4px">Solo la primera vez</div>
     </div>
     <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:6px">Título</div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -741,28 +774,6 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
     </button>
     <div style="text-align:center;margin-top:12px;font-size:11px;color:#888">
       ¿Ya tienes cuenta? <span onclick="showLoginScreen()" style="color:#1a5c38;font-weight:700;cursor:pointer">Iniciar sesión</span>
-    </div>
-    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
-  </div>
-
-  <!-- PANTALLA DE LOGIN (veces siguientes) -->
-  <div id="login-screen" style="display:none;background:#fff;border-radius:16px;padding:32px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-    <div style="text-align:center;margin-bottom:24px">
-      <img src="icon-logo.png" style="height:52px;margin-bottom:12px">
-      <div style="font-size:22px;font-weight:800;color:#1a5c38">VetDose 2.0</div>
-      <div style="font-size:12px;color:#888;margin-top:4px">Bienvenido, <b id="login-username-display" style="color:#1a5c38"></b></div>
-    </div>
-    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña</div>
-    <input type="password" id="login-pwd" placeholder="Contraseña de acceso"
-      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:16px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
-      onkeydown="if(event.key==='Enter')submitLogin()">
-    <div id="login-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
-    <button onclick="submitLogin()"
-      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
-      Entrar →
-    </button>
-    <div style="text-align:center;margin-top:12px;font-size:11px;color:#888">
-      ¿Usuario nuevo? <span onclick="switchToRegister()" style="color:#1a5c38;font-weight:700;cursor:pointer">Crear cuenta</span>
     </div>
     <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
   </div>

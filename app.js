@@ -2585,54 +2585,118 @@ var GFORM_NOMBRE='entry.1496369334', GFORM_APELLIDO='entry.155769268';
 var GFORM_EMAIL='entry.1867744646', GFORM_PAIS='entry.266488990';
 var GFORM_CLINICA='entry.701960939', GFORM_TELEFONO='entry.1296988385';
 
+// ─── ACCESO CON CONTRASEÑA ───────────────────────────────────────────────────
+var VETDOSE_PWD = 'Vetsupport01';
+
 function checkRegistration() {
-  if (!localStorage.getItem('vetdose_registered')) {
-    var o = document.getElementById('reg-overlay');
-    if (o) o.style.display = 'flex';
+  var auth = localStorage.getItem('vetdose_auth');
+  var user = localStorage.getItem('vetdose_user');
+  if (auth === 'ok' && user) {
+    try {
+      var u = JSON.parse(user);
+      if (u.displayName) {
+        var s = getSettings();
+        s.doctorName = u.displayName;
+        localStorage.setItem('vetdose_settings', JSON.stringify(s));
+        updateDrName();
+      }
+    } catch(e) {}
+    return;
   }
+  if (user) {
+    showLoginScreen();
+  } else {
+    showRegisterScreen();
+  }
+}
+
+function showRegisterScreen() {
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'flex';
+  var ls = document.getElementById('login-screen');
+  var rs = document.getElementById('register-screen');
+  if (ls) ls.style.display = 'none';
+  if (rs) rs.style.display = 'block';
+}
+
+function showLoginScreen() {
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'flex';
+  var ls = document.getElementById('login-screen');
+  var rs = document.getElementById('register-screen');
+  if (rs) rs.style.display = 'none';
+  if (ls) ls.style.display = 'block';
+  try {
+    var u = JSON.parse(localStorage.getItem('vetdose_user'));
+    var el = document.getElementById('login-username-display');
+    if (el && u && u.username) el.textContent = u.username;
+  } catch(e) {}
 }
 
 function selectTitle(t) {
   var h = document.getElementById('reg-title');
   if (h) h.value = t;
-  var a = t==='Dr.';
+  var a = t === 'Dr.';
   var b = document.getElementById('reg-btn-dr');
   var c = document.getElementById('reg-btn-dra');
-  if (!b||!c) return;
-  b.style.background=a?'#1a5c38':'#fff'; b.style.color=a?'#fff':'#666'; b.style.borderColor=a?'#1a5c38':'#ddd';
-  c.style.background=!a?'#1a5c38':'#fff'; c.style.color=!a?'#fff':'#666'; c.style.borderColor=!a?'#1a5c38':'#ddd';
+  if (!b || !c) return;
+  b.style.background = a ? '#1a5c38' : '#fff'; b.style.color = a ? '#fff' : '#666'; b.style.borderColor = a ? '#1a5c38' : '#ddd';
+  c.style.background = !a ? '#1a5c38' : '#fff'; c.style.color = !a ? '#fff' : '#666'; c.style.borderColor = !a ? '#1a5c38' : '#ddd';
 }
 
 function submitRegistration() {
-  var ti=(document.getElementById('reg-title')||{value:'Dr.'}).value;
-  var no=document.getElementById('reg-nombre').value.trim();
-  var ap=document.getElementById('reg-apellido').value.trim();
-  var em=document.getElementById('reg-email').value.trim();
-  var pa=document.getElementById('reg-pais').value.trim();
-  var cl=(document.getElementById('reg-clinica')||{value:''}).value.trim();
-  var te=(document.getElementById('reg-telefono')||{value:''}).value.trim();
-  var er=document.getElementById('reg-error');
-  if(!no){er.textContent='Ingresa tu nombre.';er.style.display='block';return;}
-  if(!ap){er.textContent='Ingresa tu apellido.';er.style.display='block';return;}
-  if(!em||!em.includes('@')){er.textContent='Email inválido.';er.style.display='block';return;}
-  if(!pa){er.textContent='Ingresa tu país.';er.style.display='block';return;}
-  er.style.display='none';
-  var fd=new FormData();
-  fd.append(GFORM_NOMBRE,no); fd.append(GFORM_APELLIDO,ap); fd.append(GFORM_EMAIL,em);
-  fd.append(GFORM_PAIS,pa); fd.append(GFORM_CLINICA,cl||'No especificada'); fd.append(GFORM_TELEFONO,te||'No especificado');
-  fetch(GFORM_URL,{method:'POST',body:fd,mode:'no-cors'}).catch(function(){});
-  var now=new Date().toLocaleString('es-US');
-  localStorage.setItem('vetdose_registered',now);
-  var fn=ti+' '+no+' '+ap, s=getSettings();
-  s.doctorName=fn; s.clinicName=cl; s.drTitle=ti;
-  localStorage.setItem('vetdose_settings',JSON.stringify(s));
-  var init=(no[0]+ap[0]).toUpperCase();
-  var pr={initials:init,name:fn,clinic:cl,email:em,settings:{doctorName:fn,clinicName:cl,drTitle:ti}};
-  var prs=loadProfiles();
-  if(!prs.find(function(p){return p.email===em||p.name===fn;})){prs.push(pr);saveProfiles(prs);}
-  var o=document.getElementById('reg-overlay');
-  if(o) o.style.display='none';
+  var title = (document.getElementById('reg-title') || {value:'Dr.'}).value;
+  var nombre = (document.getElementById('reg-nombre') || {value:''}).value.trim();
+  var credencial = (document.getElementById('reg-credencial') || {value:''}).value.trim();
+  var username = (document.getElementById('reg-username') || {value:''}).value.trim().toLowerCase().replace(/\s+/g,'');
+  var pwd = (document.getElementById('reg-pwd') || {value:''}).value.trim();
+  var er = document.getElementById('reg-error');
+  if (!nombre) { er.textContent = 'Ingresa tu nombre completo.'; er.style.display = 'block'; return; }
+  if (!username) { er.textContent = 'Ingresa un nombre de usuario.'; er.style.display = 'block'; return; }
+  if (username.length < 4) { er.textContent = 'El usuario debe tener al menos 4 caracteres.'; er.style.display = 'block'; return; }
+  if (pwd !== VETDOSE_PWD) { er.textContent = 'Contraseña incorrecta.'; er.style.display = 'block'; (document.getElementById('reg-pwd')||{}).value = ''; return; }
+  er.style.display = 'none';
+  var displayName = title + ' ' + nombre + (credencial ? ' ' + credencial : '');
+  var userData = { username: username, displayName: displayName, title: title, nombre: nombre, credencial: credencial };
+  localStorage.setItem('vetdose_user', JSON.stringify(userData));
+  localStorage.setItem('vetdose_auth', 'ok');
+  var s = getSettings();
+  s.doctorName = displayName;
+  localStorage.setItem('vetdose_settings', JSON.stringify(s));
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'none';
   updateDrName();
+}
+
+function submitLogin() {
+  var pwd = (document.getElementById('login-pwd') || {value:''}).value.trim();
+  var er = document.getElementById('login-error');
+  if (pwd !== VETDOSE_PWD) {
+    er.textContent = 'Contraseña incorrecta.';
+    er.style.display = 'block';
+    (document.getElementById('login-pwd') || {}).value = '';
+    return;
+  }
+  er.style.display = 'none';
+  localStorage.setItem('vetdose_auth', 'ok');
+  try {
+    var u = JSON.parse(localStorage.getItem('vetdose_user'));
+    if (u && u.displayName) {
+      var s = getSettings();
+      s.doctorName = u.displayName;
+      localStorage.setItem('vetdose_settings', JSON.stringify(s));
+    }
+  } catch(e) {}
+  var o = document.getElementById('reg-overlay');
+  if (o) o.style.display = 'none';
+  updateDrName();
+}
+
+function switchToRegister() {
+  var ls = document.getElementById('login-screen');
+  var rs = document.getElementById('register-screen');
+  if (ls) ls.style.display = 'none';
+  if (rs) rs.style.display = 'block';
 }
 
 // ─── PERFILES ─────────────────────────────────────────────────────────────────

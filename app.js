@@ -1397,6 +1397,94 @@ function backToCalc() {
   document.getElementById('screen-calc').classList.add('active');
 }
 
+function printCompact() {
+  var results = state.lastResults || [];
+  var name = document.getElementById('patient-name').value.trim() || 'Paciente';
+  var weight = document.getElementById('weight-input').value || '';
+  var unit = state.unit || 'kg';
+  var species = state.species === 'cat' ? '🐈 Felino' : '🐕 Canino';
+  var date = new Date().toLocaleDateString('es-US', {year:'numeric',month:'long',day:'numeric'});
+
+  // Build doctor name
+  var settings = getSettings();
+  var drName = settings.doctorName || '';
+  var clinic = settings.clinicName || '';
+
+  // Build rows for SEED_DRUGS results
+  var rows = results.map(function(r) {
+    var dose = '';
+    var ft = r.formType || 'injection';
+    var isSolid = ft === 'tablet' || ft === 'capsule';
+    if (r.resultDisplay) {
+      dose = r.resultDisplay;
+    } else if (isSolid) {
+      var totalMg = r.qty * r.conc;
+      var opts = smartTabletOptions(totalMg, r.id, ft, r.tabSizes || null, r.doseMin, r.doseMax, getWeightKg());
+      var clean = opts.filter(function(o){ return o !== '__FUERA_DE_RANGO__'; });
+      dose = clean[0] || (totalMg.toFixed(1) + ' mg');
+    } else {
+      var cc = r.cc || 0;
+      dose = cc < 0.01 ? '< 0.01 cc' : cc.toFixed(2) + ' cc';
+    }
+    return '<tr>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-weight:600;font-size:12px">' + r.trade + '<br><span style="font-weight:400;font-size:10px;color:#555">' + r.generic + '</span></td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:12px;font-weight:700;color:#1a5c38">' + dose + '</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:11px">' + r.route + '</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:11px">' + (r._selectedFreq || r.frequency || '') + '</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:10px;color:#555">' + (r.doseDisplay || '') + '</td>' +
+    '</tr>';
+  });
+
+  // TABLE_DRUGS results
+  var weightLb = Math.round(getWeightKg() * 2.20462 * 10) / 10;
+  TABLE_DRUGS.filter(function(td){ return state.selectedTableDrugs.has(td.id); }).forEach(function(td) {
+    var row = td.rows.find(function(r){ return weightLb >= r.minLb && weightLb <= r.maxLb; });
+    var dose = row ? row.result.replace(/^[^→]*→\s*/,'') : 'Ver tabla';
+    rows.push('<tr>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-weight:600;font-size:12px">' + td.trade + '<br><span style="font-weight:400;font-size:10px;color:#555">' + td.generic.replace(' (tabla)','') + '</span></td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:12px;font-weight:700;color:#1a5c38">' + dose + '</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:11px">Tabla</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:11px">' + (td.notes ? td.notes.split('.')[0] : '') + '</td>' +
+      '<td style="padding:5px 8px;border:1px solid #ccc;font-size:10px;color:#555">Label fabricante</td>' +
+    '</tr>');
+  });
+
+  if (!rows.length) { alert('No hay resultados para imprimir.'); return; }
+
+  var html = '<div style="font-family:Arial,sans-serif;padding:16px;color:#111">' +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;border-bottom:2px solid #1a5c38;padding-bottom:8px">' +
+      '<div>' +
+        '<div style="font-size:18px;font-weight:800;color:#1a5c38">VetDose 2.0 — Hoja de Dosis</div>' +
+        (drName ? '<div style="font-size:12px;color:#555">' + drName + (clinic ? ' · ' + clinic : '') + '</div>' : '') +
+      '</div>' +
+      '<div style="text-align:right;font-size:11px;color:#555">' + date + '</div>' +
+    '</div>' +
+    '<div style="margin-bottom:10px;font-size:13px">' +
+      '<b>Paciente:</b> ' + name + ' &nbsp;|&nbsp; ' +
+      '<b>Peso:</b> ' + weight + ' ' + unit + ' &nbsp;|&nbsp; ' + species +
+    '</div>' +
+    '<table style="width:100%;border-collapse:collapse;margin-bottom:12px">' +
+      '<thead><tr style="background:#1a5c38;color:#fff">' +
+        '<th style="padding:6px 8px;text-align:left;font-size:12px;border:1px solid #1a5c38">Medicamento</th>' +
+        '<th style="padding:6px 8px;text-align:left;font-size:12px;border:1px solid #1a5c38">Dosis</th>' +
+        '<th style="padding:6px 8px;text-align:left;font-size:12px;border:1px solid #1a5c38">Vía</th>' +
+        '<th style="padding:6px 8px;text-align:left;font-size:12px;border:1px solid #1a5c38">Frecuencia</th>' +
+        '<th style="padding:6px 8px;text-align:left;font-size:12px;border:1px solid #1a5c38">Dosis/kg</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows.join('') + '</tbody>' +
+    '</table>' +
+    '<div style="font-size:10px;color:#888;border-top:1px solid #ccc;padding-top:6px">' +
+      'Generado por VetDose 2.0 · Dosis calculadas según Papich Handbook of Veterinary Drugs, 5th Ed. · El veterinario es responsable de la decisión clínica final.' +
+    '</div>' +
+  '</div>';
+
+  var pc = document.getElementById('print-container');
+  if (pc) pc.innerHTML = html;
+  window.print();
+  // Clean up after print
+  setTimeout(function(){ if (pc) pc.innerHTML = ''; }, 1000);
+}
+
 function shareResults() {
   const name = document.getElementById('patient-name').value.trim() || 'Paciente';
   const weightKg = getWeightKg();

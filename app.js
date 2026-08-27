@@ -353,13 +353,14 @@ var TABLE_DRUGS = [
   {
     id: 'cerenia_tab_table', generic: 'Maropitant tabletas (tabla)', trade: 'Cerenia tabs',
     species: ['dog', 'cat'], category: 'antiemetic',
-    notes: 'Perros y gatos ≥ 16 semanas. DAR CON COMIDA para reducir hipersalivación. Vómito agudo: 1 dosis/día x 5 días. Cinetosis: dar 2h antes del viaje.',
+    notes: 'Perros: aprobado FDA. Gatos: uso off-label (2 mg/kg misma dosis). ≥16 semanas. DAR CON COMIDA para reducir hipersalivación. Vómito agudo: c/24h x hasta 5 días.',
     rows: [
-      { minLb: 4.4,  maxLb: 8.8,  result: '4.4–8.8 lb → 1 tab. 16 mg' },
-      { minLb: 8.9,  maxLb: 17.6, result: '8.9–17.6 lb → 1 tab. 24 mg' },
-      { minLb: 17.7, maxLb: 33.0, result: '17.7–33 lb → 1 tab. 60 mg' },
-      { minLb: 33.1, maxLb: 66.0, result: '33.1–66 lb → 1 tab. 60 mg' },
-      { minLb: 66.1, maxLb: 110,  result: '66.1–110 lb → 2 tab. 60 mg' },
+      { minLb: 6.6,  maxLb: 8.8,   result: '0.5 tab. 16 mg' },
+      { minLb: 8.9,  maxLb: 17.6,  result: '1 tab. 16 mg' },
+      { minLb: 17.7, maxLb: 26.5,  result: '1 tab. 24 mg' },
+      { minLb: 26.6, maxLb: 52.9,  result: '2 tab. 24 mg' },
+      { minLb: 53.0, maxLb: 66.1,  result: '1 tab. 60 mg' },
+      { minLb: 66.2, maxLb: 132.3, result: '2 tab. 60 mg' },
     ]
   },
 
@@ -368,14 +369,17 @@ var TABLE_DRUGS = [
   {
     id: 'librela_table', generic: 'Bedinvetmab (tabla)', trade: 'Librela',
     species: ['dog'], category: 'analgesic',
-    notes: 'Solo perros. Anti-NGF. Dolor osteoarticular. Dosis: 0.5 mg/kg (0.23 mg/lb) SQ mensual. Administrar contenido completo (1 mL) del vial. Para >60 kg combinar viales. No usar con AINEs a largo plazo. No usar en gestantes/lactantes/reproductores.',
+    notes: 'Solo perros. Anti-NGF. Dolor osteoarticular. 0.5 mg/kg SQ mensual. <11 lb: 0.1 mL/kg del vial 5mg/mL (no vial completo). ≥11 lb: vial completo según tabla. No usar en gestantes/lactantes/reproductores. Fuente: Zoetis label 2026.',
     rows: [
-      { minLb: 11.0, maxLb: 22.0, result: '11–22 lb (5–10 kg → 1 mL vial 5 mg SQ' },
-      { minLb: 22.1, maxLb: 44.0, result: '22.1–44 lb (10–20 kg → 1 mL vial 10 mg SQ' },
-      { minLb: 44.1, maxLb: 66.0, result: '44.1–66 lb (20–30 kg → 1 mL vial 15 mg SQ' },
-      { minLb: 66.1, maxLb: 88.0, result: '66.1–88 lb (30–40 kg → 1 mL vial 20 mg SQ' },
-      { minLb: 88.1, maxLb: 132,  result: '88.1–132 lb (40–60 kg → 1 mL vial 30 mg SQ' },
-      { minLb: 132.1,maxLb: 176,  result: '>132 lb (>60 kg → combinar viales según peso. Consultar tabla Zoetis.' },
+      { minLb: 0,     maxLb: 10.9,  result: '<11 lb (<5 kg) → 0.1 mL/kg del vial 5 mg/mL (NO vial completo)' },
+      { minLb: 11.0,  maxLb: 22.1,  result: '1 vial 5 mg/mL SQ' },
+      { minLb: 22.2,  maxLb: 44.1,  result: '1 vial 10 mg/mL SQ' },
+      { minLb: 44.2,  maxLb: 66.1,  result: '1 vial 15 mg/mL SQ' },
+      { minLb: 66.2,  maxLb: 88.2,  result: '1 vial 20 mg/mL SQ' },
+      { minLb: 88.3,  maxLb: 132.3, result: '1 vial 30 mg/mL SQ' },
+      { minLb: 132.4, maxLb: 176.4, result: '2 viales 30 mg/mL SQ' },
+      { minLb: 176.5, maxLb: 220.5, result: '1 vial 20 mg/mL + 1 vial 30 mg/mL SQ' },
+      { minLb: 220.6, maxLb: 264.6, result: '2 viales 30 mg/mL SQ (combinados en una jeringa)' },
     ]
   },
 
@@ -396,13 +400,22 @@ var TABLE_DRUGS = [
   {
     id: 'zenrelia_table', generic: 'Ilunocitinib (tabla)', trade: 'Zenrelia',
     species: ['dog'], category: 'dermatology/JAK inhibitor',
-    notes: 'Solo perros ≥ 12 meses. JAK1 inhibidor. Dermatitis atópica. Una vez al día. Comprimidos de 4, 8 y 16 mg.',
+    notes: 'Solo perros ≥ 12 meses. JAK inhibidor. Dermatitis atópica. c/24h con o sin comida. Tabletas ranuradas: 4.8, 6.4, 8.5 y 15 mg. NO existen tabletas de 4/8/16mg. Fuente: Elanco DailyMed label 2026.',
     rows: [
-      { minLb: 6.6,  maxLb: 11.0, result: '6.6–11 lb → 1 tab. 4 mg SID' },
-      { minLb: 11.1, maxLb: 22.0, result: '11.1–22 lb → 1 tab. 8 mg SID' },
-      { minLb: 22.1, maxLb: 44.0, result: '22.1–44 lb → 1 tab. 16 mg SID' },
-      { minLb: 44.1, maxLb: 88.0, result: '44.1–88 lb → 2 tab. 16 mg SID' },
-      { minLb: 88.1, maxLb: 132,  result: '88.1–132 lb → 3 tab. 16 mg SID' },
+      { minLb: 6.6,   maxLb: 8.8,   result: '0.5 tab. 4.8 mg' },
+      { minLb: 8.9,   maxLb: 11.8,  result: '0.5 tab. 6.4 mg' },
+      { minLb: 11.9,  maxLb: 14.3,  result: '0.5 tab. 8.5 mg' },
+      { minLb: 14.4,  maxLb: 17.7,  result: '1 tab. 4.8 mg' },
+      { minLb: 17.8,  maxLb: 23.6,  result: '1 tab. 6.4 mg' },
+      { minLb: 23.7,  maxLb: 31.1,  result: '1 tab. 8.5 mg' },
+      { minLb: 31.2,  maxLb: 35.4,  result: '1.5 tab. 6.4 mg' },
+      { minLb: 35.5,  maxLb: 43.1,  result: '1.5 tab. 8.5 mg' },
+      { minLb: 43.2,  maxLb: 55.0,  result: '1 tab. 15 mg' },
+      { minLb: 55.1,  maxLb: 62.5,  result: '2 tab. 8.5 mg' },
+      { minLb: 62.6,  maxLb: 83.3,  result: '1.5 tab. 15 mg' },
+      { minLb: 83.4,  maxLb: 110.0, result: '2 tab. 15 mg' },
+      { minLb: 110.1, maxLb: 137.5, result: '2.5 tab. 15 mg' },
+      { minLb: 137.6, maxLb: 166.0, result: '3 tab. 15 mg' },
     ]
   },
 
@@ -410,13 +423,14 @@ var TABLE_DRUGS = [
   {
     id: 'cardalis_table', generic: 'Benazepril/Espironolactona (tabla)', trade: 'Cardalis',
     species: ['dog'], category: 'cardiac',
-    notes: 'Solo perros. ICC. Benazepril (~0.25 mg/kg) + Espironolactona (~2 mg/kg) SID con comida. Presentaciones: Small, Medium, Large.',
+    notes: 'Solo perros. ICC. c/24h CON COMIDA. Benazepril 0.25 mg/kg + Espironolactona 2 mg/kg. Presentaciones: Small (2.5/20mg), Medium (5/40mg), Large (10/80mg). Fuente: Ceva label FDA.',
     rows: [
-      { minLb: 5.5,  maxLb: 11.0, result: '5.5–11 lb → 1 tab. Small (2.5 mg benazepril / 20 mg espironolactona' },
-      { minLb: 11.1, maxLb: 22.0, result: '11.1–22 lb → 1 tab. Medium (5 mg benazepril / 40 mg espironolactona' },
-      { minLb: 22.1, maxLb: 44.0, result: '22.1–44 lb → 1 tab. Large (10 mg benazepril / 80 mg espironolactona' },
-      { minLb: 44.1, maxLb: 88.0, result: '44.1–88 lb → 2 tab. Large (10/80 mg c/u' },
-      { minLb: 88.1, maxLb: 132,  result: '88.1–132 lb → 3 tab. Large (10/80 mg c/u' },
+      { minLb: 5.5,   maxLb: 11.0,  result: '0.5 tab. Small (2.5mg benazepril + 20mg espironolactona)' },
+      { minLb: 11.1,  maxLb: 22.0,  result: '1 tab. Small (2.5mg benazepril + 20mg espironolactona)' },
+      { minLb: 22.1,  maxLb: 44.1,  result: '1 tab. Medium (5mg benazepril + 40mg espironolactona)' },
+      { minLb: 44.2,  maxLb: 88.2,  result: '1 tab. Large (10mg benazepril + 80mg espironolactona)' },
+      { minLb: 88.3,  maxLb: 132.3, result: '1.5 tab. Large (10mg benazepril + 80mg espironolactona)' },
+      { minLb: 132.4, maxLb: 176.4, result: '2 tab. Large (10mg benazepril + 80mg espironolactona)' },
     ]
   },
 

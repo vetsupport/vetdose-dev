@@ -1157,11 +1157,14 @@ function calculate() {
   });
 
   // Calculate table drugs
+  // NOTA: redondear a 1 decimal para evitar falsos "fuera de rango" en límites exactos
+  // (ej: 10kg = 22.0462lb > límite 22.0 → falla sin redondeo)
+  const weightLbRounded = Math.round(weightLb * 10) / 10;
   const tableResults = TABLE_DRUGS
     .filter(td => state.selectedTableDrugs.has(td.id))
     .map(td => {
-      const row = td.rows.find(r => weightLb >= r.minLb && weightLb <= r.maxLb);
-      return { ...td, tableResult: row ? row.result : `Peso ${weightLb.toFixed(1)} lb fuera de rango de tabla`, isTable: true };
+      const row = td.rows.find(r => weightLbRounded >= r.minLb && weightLbRounded <= r.maxLb);
+      return { ...td, tableResult: row ? row.result : `Peso ${weightLbRounded.toFixed(1)} lb fuera de rango de tabla`, isTable: true };
     });
 
   // Find antagonists
@@ -1533,7 +1536,7 @@ function shareResults() {
   });
 
   TABLE_DRUGS.filter(td => state.selectedTableDrugs.has(td.id)).forEach(td => {
-    const weightLb = getWeightLb();
+    const weightLb = Math.round(getWeightLb() * 10) / 10;
     const row = td.rows.find(r => weightLb >= r.minLb && weightLb <= r.maxLb);
     const dose = row ? row.result.replace(/^[^\u2192]*\u2192\s*/,'') : 'fuera de rango';
     text += `[TAB] ${td.trade.toUpperCase()}\n`;

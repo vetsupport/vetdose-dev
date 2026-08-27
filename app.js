@@ -271,14 +271,15 @@ var TABLE_DRUGS = [
     species: ['dog'], category: 'dermatology/JAK inhibitor',
     notes: 'Solo perros ≥ 12 meses y ≥ 6.6 lb. Fase aguda: c/12h x 14 días, luego c/24h. Con o sin comida.',
     rows: [
-      { minLb: 6.6,  maxLb: 9.9,  result: '3.6 mg — 1 tab. 3.6 mg' },
-      { minLb: 10.0, maxLb: 14.9, result: '5.4 mg — 1 tab. 5.4 mg' },
-      { minLb: 15.0, maxLb: 19.9, result: '5.4 mg — 1 tab. 5.4 mg' },
-      { minLb: 20.0, maxLb: 29.9, result: '16 mg — 1 tab. 16 mg' },
-      { minLb: 30.0, maxLb: 44.9, result: '16 mg — 1 tab. 16 mg' },
-      { minLb: 45.0, maxLb: 59.9, result: '16 mg — 1.5 comprimidos 16 mg' },
-      { minLb: 60.0, maxLb: 89.9, result: '16 mg — 2 tab. 16 mg' },
-      { minLb: 90.0, maxLb: 130,  result: '16 mg — 3 tab. 16 mg' },
+      { minLb: 6.6,   maxLb: 9.9,   result: '0.5 tab. 3.6 mg' },
+      { minLb: 10.0,  maxLb: 14.9,  result: '0.5 tab. 5.4 mg' },
+      { minLb: 15.0,  maxLb: 19.9,  result: '1 tab. 3.6 mg' },
+      { minLb: 20.0,  maxLb: 29.9,  result: '1 tab. 5.4 mg' },
+      { minLb: 30.0,  maxLb: 44.9,  result: '0.5 tab. 16 mg' },
+      { minLb: 45.0,  maxLb: 59.9,  result: '2 tab. 5.4 mg' },
+      { minLb: 60.0,  maxLb: 89.9,  result: '1 tab. 16 mg' },
+      { minLb: 90.0,  maxLb: 129.9, result: '1.5 tab. 16 mg' },
+      { minLb: 130.0, maxLb: 175.9, result: '2 tab. 16 mg' },
     ]
   },
 
@@ -1356,7 +1357,7 @@ function renderTableResult(r) {
           <div class="result-generic">${r.trade}</div>
           <div class="result-trade">${r.generic.replace(' (tabla)','')}</div>
         </div>
-        <div class="result-dose" style="font-size:16px;color:#1d4ed8;text-align:right;max-width:160px;line-height:1.3">${dose}</div>
+        <div class="result-dose" style="font-size:16px;color:#1d4ed8;text-align:right;line-height:1.3;word-break:break-word;white-space:normal;flex-shrink:1">${dose}</div>
       </div>
       <div class="result-body">
         <div class="result-row"><div class="result-lbl">Vía</div><div class="route-badge" style="color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe">Tabla fabricante</div></div>

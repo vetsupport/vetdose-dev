@@ -176,9 +176,39 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 /* PRINT */
 @media print{
   .tab-bar,.sticky-btn,.btn-share,.btn-print,.btn-secondary,.btn-version,
-  #screen-calc,#screen-cri,#screen-drugs{display:none!important}
-  #screen-results{display:block!important;padding:0}
-  .result-card{break-inside:avoid;box-shadow:none}
+  #screen-calc,#screen-cri,#screen-drugs,#print-container{display:none!important}
+
+  #screen-results{display:block!important;padding:0;height:auto!important;overflow:visible!important}
+  .screen{height:auto!important;overflow:visible!important}
+  .app{height:auto!important;overflow:visible!important}
+  body,html{height:auto!important;overflow:visible!important}
+
+  /* Tarjetas compactas */
+  .result-card{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;margin-bottom:5px!important;border-radius:4px!important}
+  .result-header{padding:5px 10px!important;background:#e8f5ee!important}
+  .result-generic{font-size:12px!important;font-weight:700!important}
+  .result-trade{font-size:10px!important}
+  .result-dose{font-size:15px!important}
+  .result-body{padding:3px 10px!important}
+  .result-row{padding:1px 0!important;border-bottom:none!important}
+  .result-lbl{font-size:10px!important}
+  .result-val{font-size:10px!important}
+  .route-badge{font-size:10px!important;padding:1px 5px!important}
+
+  /* Ocultar bloques no esenciales */
+  .warn-note{font-size:9px!important;padding:2px 6px!important;margin-top:1px!important}
+  [id^="adj-"]{display:none!important}
+
+  /* Ocultar por contenido */
+  div[style*="Pendiente validación"],
+  div[style*="Ajustar dosis"],
+  div[style*="Opciones de dosificación"],
+  div[style*="FUERA_DE_RANGO"],
+  div[style*="fef3c7"],
+  div[style*="f0fdf4"]{display:none!important}
+
+  .header{padding:4px 12px!important;min-height:auto!important}
+  #results-header{padding:8px 12px!important}
 }
 </style>
 </head>
@@ -288,6 +318,9 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 
     <!-- CRI -->
     <div class="screen" id="screen-cri">
+      <div style="background:#f0fdf4;border-left:3px solid var(--accent);border-radius:6px;padding:9px 12px;margin-bottom:14px;font-size:12px;color:#374151;line-height:1.6">
+        💉 <b>Infusión a tasa constante (CRI).</b> Primero ingresa el peso del paciente en la pantalla <b>Calcular</b>. Luego selecciona la droga, indica la tasa de dosis deseada (ej. 5 mcg/kg/min), el volumen de dilución y la velocidad de bomba. La app calcula cuántos mL del vial stock agregar al fluido para lograr esa tasa exacta a esa velocidad de bomba. El resultado incluye concentración final, duración de la bolsa y, cuando aplica, la loading dose previa al inicio de la infusión.
+      </div>
       <div class="section-label">Droga para CRI</div>
       <div class="card">
         <div class="mfield" style="margin-bottom:12px">
@@ -461,35 +494,33 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 
       <div class="section-label">Alimento — opcional</div>
       <div class="card">
-        <div style="display:flex;gap:8px;align-items:flex-end">
-          <div style="flex:2">
-            <div class="field-label">kcal del alimento</div>
-            <input type="number" id="nut-kcal-food" placeholder="Ej: 328" step="1" min="0">
-          </div>
-          <div style="flex:1">
-            <div class="field-label">Por unidad</div>
-            <select id="nut-food-unit" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:14px;font-family:var(--sans);outline:none">
-              <option value="lata">lata</option>
-              <option value="taza">taza</option>
-              <option value="100g">100 g</option>
-              <option value="porción">porción</option>
-            </select>
-          </div>
+        <select id="nut-food-select" onchange="onNutFoodChange()" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;font-family:var(--sans);outline:none;margin-bottom:8px">
+          <option value="">-- Seleccionar alimento --</option>
+        </select>
+        <div id="nut-food-custom" style="display:none;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <input type="number" id="nut-kcal-food" placeholder="kcal por unidad" step="1" min="0"
+            style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:14px;font-family:var(--mono);outline:none">
+          <select id="nut-food-unit" style="width:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 8px;font-size:13px;font-family:var(--sans);outline:none">
+            <option value="taza">taza</option>
+            <option value="lata">lata</option>
+            <option value="100g">100 g</option>
+            <option value="porción">porción</option>
+          </select>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px">Busca las kcal en la etiqueta del alimento o en la web del fabricante</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Las kcal de cada marca son valores de referencia. Verifique en la etiqueta del producto.</div>
       </div>
 
       <div class="sticky-btn"><button class="btn btn-primary" onclick="calcNutricion()">Calcular energía</button></div>
       <div id="nut-result" style="display:none;padding-bottom:16px"></div>
-    </div>
-    </div>
+    </div><!-- /nut-rer-mode -->
+
     <div id="nut-bcs-mode" style="display:none">
       <div style="background:#f0fdf4;border-left:3px solid var(--accent);border-radius:6px;padding:9px 12px;margin-bottom:14px;font-size:12px;color:#374151;line-height:1.6">
         ⚖️ Estima el peso ideal según la Condición Corporal (BCS 1–9), calcula las calorías para pérdida de peso segura y proyecta las semanas para alcanzar el peso meta a un ritmo de 0.5–1% por semana. En gatos: nunca restricción severa (riesgo de lipidosis hepática).
       </div>
       <div class="card">
         <div class="section-label">Especie</div>
-        <select id="bcs-species" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:14px;font-family:var(--sans);outline:none;margin-bottom:12px"><option value="dog">🐕 Canino</option><option value="cat">🐈 Felino</option></select>
+        <select id="bcs-species" onchange="populateFoodSelects(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:14px;font-family:var(--sans);outline:none;margin-bottom:12px"><option value="dog">🐕 Canino</option><option value="cat">🐈 Felino</option></select>
         <div class="section-label">Peso actual (kg)</div>
         <input type="number" id="bcs-weight" placeholder="Ej: 15.5" step="0.1" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:16px;font-family:var(--mono);outline:none;box-sizing:border-box;margin-bottom:12px">
         <div class="section-label">Condición Corporal (BCS 1–9)</div>
@@ -502,38 +533,7 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
         </div>
         <div class="section-label">Alimento (opcional)</div>
         <select id="bcs-food" onchange="onBCSFoodChange()" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;font-family:var(--sans);outline:none;margin-bottom:8px">
-          <option value="">-- Seleccionar para calcular cantidad --</option>
-          <optgroup label="🐕 Hill's — Seco (taza)">
-            <option value="364|taza">Hill's Science Diet Adult Canino — 364 kcal/taza</option>
-            <option value="243|taza">Hill's Prescription r/d Canino — 243 kcal/taza</option>
-            <option value="286|taza">Hill's Prescription w/d Canino — 286 kcal/taza</option>
-          </optgroup>
-          <optgroup label="🐕 Royal Canin — Seco (taza)">
-            <option value="265|taza">RC Satiety Support Canino — 265 kcal/taza</option>
-            <option value="316|taza">RC Weight Control Canino — 316 kcal/taza</option>
-          </optgroup>
-          <optgroup label="🐕 Purina — Seco (taza)">
-            <option value="340|taza">Pro Plan Weight Management Canino — 340 kcal/taza</option>
-            <option value="352|taza">Purina ONE Healthy Weight — 352 kcal/taza</option>
-          </optgroup>
-          <optgroup label="🐈 Hill's — Seco (taza)">
-            <option value="378|taza">Hill's Science Diet Adult Felino — 378 kcal/taza</option>
-            <option value="273|taza">Hill's Prescription r/d Felino — 273 kcal/taza</option>
-            <option value="267|taza">Hill's Prescription w/d Felino — 267 kcal/taza</option>
-          </optgroup>
-          <optgroup label="🐈 Royal Canin / Purina — Seco (taza)">
-            <option value="287|taza">RC Satiety Support Felino — 287 kcal/taza</option>
-            <option value="346|taza">Pro Plan Weight Management Felino — 346 kcal/taza</option>
-          </optgroup>
-          <optgroup label="🥫 Húmedo — Latas">
-            <option value="159|lata">Hill's Science Diet Adult (lata 156g) — 159 kcal/lata</option>
-            <option value="120|lata">Hill's Prescription r/d (lata 156g) — 120 kcal/lata</option>
-            <option value="157|lata">Royal Canin Satiety (lata 195g) — 157 kcal/lata</option>
-            <option value="185|lata">Purina Pro Plan (lata 156g) — 185 kcal/lata</option>
-          </optgroup>
-          <optgroup label="✏️ Personalizado">
-            <option value="custom|taza">Otro alimento — ingresar kcal</option>
-          </optgroup>
+          <option value="">-- Seleccionar alimento --</option>
         </select>
         <div id="bcs-food-custom" style="display:none;gap:8px;margin-bottom:8px">
           <input type="number" id="bcs-food-kcal" placeholder="kcal por unidad" step="1" min="1"
@@ -547,7 +547,9 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
         <button class="btn btn-primary" onclick="calcBCS()">Calcular Plan de Peso</button>
       </div>
       <div id="bcs-result" style="display:none;margin-top:12px"></div>
-    </div>
+    </div><!-- /nut-bcs-mode -->
+
+    </div><!-- /screen-nutricion -->
 
     <div class="screen" id="screen-potasio">
       <div style="background:#f0fdf4;border-left:3px solid var(--accent);border-radius:6px;padding:9px 12px;margin-bottom:14px;font-size:12px;color:#374151;line-height:1.6">
@@ -575,6 +577,9 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 
   </div>
 </div>
+
+<!-- CONTENEDOR DE IMPRESIÓN COMPACTA -->
+<div id="print-container"></div>
 
 <!-- MODAL DROGA -->
 <div class="overlay hidden" id="modal-overlay" onclick="closeModalOutside(event)">
@@ -700,6 +705,13 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
     <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
       <button class="btn btn-version" onclick="closeSettings();showChangelog()">VetDose 2.0 &mdash; Ver novedades</button>
     </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
+      <button class="btn" onclick="logoutVetDose()" style="width:100%;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+        🔓 Cerrar sesión
+      </button>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Otro usuario podrá iniciar sesión en este dispositivo</div>
+    </div>
   </div>
 </div>
 
@@ -732,39 +744,73 @@ input:focus{border-color:var(--accent-md);box-shadow:0 0 0 3px rgba(26,92,56,.1)
 <script src="app.js"></script>
 
 <!-- REGISTRO (MOD-037) -->
-<div id="reg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:16px;overflow-y:auto">
-  <div style="background:#fff;border-radius:16px;padding:24px 20px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto">
-    <div style="text-align:center;margin-bottom:14px">
-      <img src="icon-logo.png" style="height:44px;margin-bottom:8px">
-      <div style="font-size:20px;font-weight:800;color:#1a5c38">Bienvenido a VetDose 2.0</div>
-      <div style="font-size:11px;color:#666;margin-top:4px;line-height:1.5">No hay una gran corporación detrás — solo un veterinario con deseos de mejorar la clínica diaria.</div>
+<!-- LOGIN / REGISTRO -->
+<div id="reg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;padding:16px">
+
+  <!-- PANTALLA DE LOGIN (pantalla principal — siempre se ve primero) -->
+  <div id="login-screen" style="display:none;background:#fff;border-radius:16px;padding:32px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:24px">
+      <img src="icon-logo.png" style="height:52px;margin-bottom:12px">
+      <div style="font-size:22px;font-weight:800;color:#1a5c38">VetDose 2.0</div>
+      <div style="font-size:12px;color:#888;margin-top:4px">Ingrese sus credenciales para continuar</div>
     </div>
-    <div style="margin-bottom:12px">
-      <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:6px">Título *</div>
-      <div style="display:flex;gap:8px">
-        <button id="reg-btn-dr" onclick="selectTitle('Dr.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #1a5c38;background:#1a5c38;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Dr.</button>
-        <button id="reg-btn-dra" onclick="selectTitle('Dra.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #ddd;background:#fff;color:#666;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Dra.</button>
-      </div>
-      <input type="hidden" id="reg-title" value="Dr.">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Usuario</div>
+    <input type="text" id="login-username-input" placeholder="Ej: yenenvil" autocomplete="off" autocapitalize="none"
+      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
+      onkeydown="if(event.key==='Enter')document.getElementById('login-pwd').focus()">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña</div>
+    <input type="password" id="login-pwd" placeholder="Contraseña de acceso"
+      style="width:100%;padding:13px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
+      onkeydown="if(event.key==='Enter')submitLogin()">
+    <div id="login-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
+    <button onclick="submitLogin()"
+      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+      Entrar →
+    </button>
+    <div style="text-align:center;margin-top:14px;font-size:11px;color:#888">
+      ¿Primera vez? <span onclick="switchToRegister()" style="color:#1a5c38;font-weight:700;cursor:pointer">Crear cuenta</span>
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Nombre *</div>
-        <input type="text" id="reg-nombre" placeholder="Juan" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-      <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Apellido *</div>
-        <input type="text" id="reg-apellido" placeholder="Pérez" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-    </div>
-    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Correo electrónico *</div>
-      <input type="email" id="reg-email" placeholder="dr@clinica.com" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">País *</div>
-      <input type="text" id="reg-pais" placeholder="USA, Venezuela, Colombia..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-    <div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Clínica</div>
-      <input type="text" id="reg-clinica" placeholder="Banfield, VCA..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-    <div style="margin-bottom:18px"><div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Teléfono</div>
-      <input type="tel" id="reg-telefono" placeholder="(305) 555-1234" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box"></div>
-    <div id="reg-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:10px;text-align:center"></div>
-    <button onclick="submitRegistration()" style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Acceder a VetDose →</button>
-    <div style="text-align:center;margin-top:10px;font-size:10px;color:#999">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
+    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
   </div>
+
+  <!-- PANTALLA DE REGISTRO (solo primera vez) -->
+  <div id="register-screen" style="display:none;background:#fff;border-radius:16px;padding:28px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:20px">
+      <img src="icon-logo.png" style="height:48px;margin-bottom:10px">
+      <div style="font-size:20px;font-weight:800;color:#1a5c38">Crear cuenta</div>
+      <div style="font-size:11px;color:#888;margin-top:4px">Solo la primera vez</div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:6px">Título</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button id="reg-btn-dr" onclick="selectTitle('Dr.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #1a5c38;background:#1a5c38;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Dr.</button>
+      <button id="reg-btn-dra" onclick="selectTitle('Dra.')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #ddd;background:#fff;color:#666;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Dra.</button>
+    </div>
+    <input type="hidden" id="reg-title" value="Dr.">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Nombre completo *</div>
+    <input type="text" id="reg-nombre" placeholder="Ej: Yenen Villasmil"
+      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Credencial</div>
+    <input type="text" id="reg-credencial" placeholder="Ej: DVM, MVZ, MV..."
+      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Usuario *</div>
+    <input type="text" id="reg-username" placeholder="Ej: yenenvil" autocomplete="off" autocapitalize="none"
+      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:4px">
+    <div style="font-size:11px;color:#e67e22;font-weight:600;margin-bottom:10px">⚠ Su usuario NO es su correo electrónico</div>
+    <div style="font-size:11px;font-weight:700;color:#1a5c38;margin-bottom:4px">Contraseña *</div>
+    <input type="password" id="reg-pwd" placeholder="Contraseña de acceso"
+      style="width:100%;padding:11px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;margin-bottom:10px"
+      onkeydown="if(event.key==='Enter')submitRegistration()">
+    <div id="reg-error" style="display:none;color:#dc2626;font-size:12px;margin-bottom:8px;text-align:center"></div>
+    <button onclick="submitRegistration()"
+      style="width:100%;background:#1a5c38;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+      Crear cuenta y entrar →
+    </button>
+    <div style="text-align:center;margin-top:12px;font-size:11px;color:#888">
+      ¿Ya tienes cuenta? <span onclick="showLoginScreen()" style="color:#1a5c38;font-weight:700;cursor:pointer">Iniciar sesión</span>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-size:10px;color:#ccc">Dr. Yenen Villasmil-Ontiveros · Pembroke Pines, Florida</div>
+  </div>
+
 </div>
 
 <!-- PERFIL -->

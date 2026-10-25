@@ -387,12 +387,10 @@ var TABLE_DRUGS = [
   {
     id: 'solensia_table', generic: 'Frunevetmab (tabla)', trade: 'Solensia',
     species: ['cat'], category: 'analgesic',
-    notes: 'Solo gatos. Anti-NGF felino. Dolor osteoarticular. Dosis: 1 mg/kg SQ mensual. Administrar contenido completo del vial. No usar en gestantes/lactantes/reproductores.',
+    notes: 'Solo gatos. Anti-NGF felino. Dolor osteoarticular. Vial 7 mg/mL (1 mL). SQ una vez al mes. Fuente: etiqueta Zoetis. Administrar contenido completo del vial. No usar en gestantes/lactantes/reproductores.',
     rows: [
-      { minLb: 4.4,  maxLb: 8.8,  result: '4.4–8.8 lb (2–4 kg → 1 vial 1 mg SQ' },
-      { minLb: 8.9,  maxLb: 13.2, result: '8.9–13.2 lb (4–6 kg → 1 vial 2 mg SQ' },
-      { minLb: 13.3, maxLb: 17.6, result: '13.3–17.6 lb (6–8 kg → 1 vial 3 mg SQ' },
-      { minLb: 17.7, maxLb: 22.0, result: '17.7–22 lb (8–10 kg → 1 vial 4 mg SQ' },
+      { minLb: 5.5,  maxLb: 15.4, result: '5.5–15.4 lb (2.5–7 kg) → 1 vial 7 mg/mL (1 mL) SQ' },
+      { minLb: 15.5, maxLb: 30.8, result: '15.5–30.8 lb (7.1–14 kg) → 2 viales 7 mg/mL (2 mL) SQ' },
     ]
   },
 

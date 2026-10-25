@@ -1,4 +1,4 @@
-const CACHE = 'vetdose-v40-202610251210';
+const CACHE = 'vetdose-v42-202610251310';
 const FILES = [
   './',
   './index.html',

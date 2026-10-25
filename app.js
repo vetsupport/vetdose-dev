@@ -13,7 +13,6 @@ var SEED_DRUGS = [
   { id: 'benazepril', generic: 'Benazepril', trade: 'Fortekor/Lotensin', conc: 5, tabSizes: [5,10,20], doseMin: 0.25, doseMax: 0.5, dosePref: 0.25, unit: 'mg/kg', route: 'PO', category: 'cardiac/renal', formType: 'tablet', calcMode: 'standard', notes: 'IECA; proteinuria/ICC. Monitor renal/K+.', source: 'Plumb 2024; Papich 2020', frequency: 'c/24h', frequencies: ['c/24h', 'c/12h'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'buprenorfina', generic: 'Buprenorfina', trade: 'Buprenex', conc: 0.3, doseMin: 0.006, doseMax: 0.02, dosePref: 0.01, unit: 'mg/kg', route: 'IV, IM, SQ, transmucosal', category: 'analgesic', formType: 'injection', calcMode: 'standard', notes: 'Gatos: transmucosal muy utilizada; dosis/frecuencia puede diferir.', source: 'Plumb 2024; Papich 2020', frequency: 'c/6h', frequencies: ['c/6h', 'c/8h'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'butorfanol', generic: 'Butorfanol', trade: 'Torbugesic', conc: 10, doseMin: 0.1, doseMax: 0.4, dosePref: 0.3, unit: 'mg/kg', route: 'SQ, IV, IM', category: 'analgesic/sedation', formType: 'injection', calcMode: 'standard', notes: 'Analgesia leve-moderada; duración corta 1-2 h.', source: 'Plumb 2024; Papich 2020', frequency: 'c/4h', frequencies: ['c/4h', 'c/6h'], validationStatus: 'Revisión preliminar; validar por usuario' },
-  { id: 'cardalis_benazepril_espironolactona', generic: 'Cardalis (benazepril/espironolactona)', trade: 'Cardalis', conc: 2.5, tabSizes: [2.5, 5, 10], doseMin: 0.25, doseMax: 2.0, dosePref: 1.0, unit: 'mg/kg component-based', route: 'PO', category: 'cardiac', formType: 'tablet', calcMode: 'fixed', notes: 'Solo perros. Dosis por tabletas según peso; componentes objetivo: benazepril aprox 0.25 mg/kg + espironolactona aprox 2 mg/kg SID.', source: 'FDA/EMA label; Plumb 2024', frequency: 'c/24h con comida', frequencies: ['c/24h con comida'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'cefalexina', generic: 'Cefalexina', trade: 'Keflex/Rilexine', conc: 250, tabSizes: [250,500], doseMin: 22.0, doseMax: 25.0, dosePref: 22.0, unit: 'mg/kg', route: 'PO', category: 'antibiotic', formType: 'capsule', calcMode: 'standard', notes: 'Pioderma: duración moderna debe individualizarse y favorecer tópicos/cultivo.', source: 'Plumb 2024; Papich 2020', frequency: 'c/12h', frequencies: ['c/12h', 'c/8h'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'cefazolina', generic: 'Cefazolina', trade: 'Ancef', conc: 100, doseMin: 20.0, doseMax: 20.0, dosePref: 22.0, unit: 'mg/kg', route: 'IV, IM', category: 'antibiotic', formType: 'injection', calcMode: 'standard', notes: 'Profilaxis quirúrgica; repetir según duración cirugía.', source: 'Plumb 2024; Papich 2020', frequency: 'c/8h', frequencies: ['c/6h', 'c/8h'], validationStatus: 'Revisión preliminar; validar por usuario' },
   { id: 'cefovecin', generic: 'Cefovecin', trade: 'Convenia', conc: 80.0, doseMin: 8.0, doseMax: 8.0, dosePref: 8.0, unit: 'mg/kg', route: 'SQ', category: 'antibiotic', formType: 'injection', calcMode: 'standard', notes: 'Duración ~14 días (actividad hasta 7-14 días). No requiere dosificación diaria. Perros y gatos. Excelente compliance. No usar en infecciones graves o resistentes.', source: 'Plumb 2024; FDA label', frequency: '14d', frequencies: ['14d'], validationStatus: 'Revisión preliminar; validar por usuario' },
@@ -398,7 +397,7 @@ var TABLE_DRUGS = [
   {
     id: 'zenrelia_table', generic: 'Ilunocitinib (tabla)', trade: 'Zenrelia',
     species: ['dog'], category: 'dermatology/JAK inhibitor',
-    notes: 'Solo perros ≥ 12 meses. JAK inhibidor. Dermatitis atópica. c/24h con o sin comida. Tabletas ranuradas: 4.8, 6.4, 8.5 y 15 mg. NO existen tabletas de 4/8/16mg. Fuente: Elanco DailyMed label 2026.',
+    notes: 'Solo perros ≥ 12 meses. JAK inhibidor. Dermatitis atópica. c/24h con o sin comida. Tabletas ranuradas: 4.8, 6.4, 8.5 y 15 mg. Fuente: Elanco DailyMed label 2026.',
     rows: [
       { minLb: 6.6,   maxLb: 8.8,   result: '0.5 tab. 4.8 mg' },
       { minLb: 8.9,   maxLb: 11.8,  result: '0.5 tab. 6.4 mg' },
@@ -488,7 +487,6 @@ var TABLET_SIZES = {
   amoxicilina_clavulanato:     [62.5, 125, 250, 375],
   ciclosporina_oral:           [10, 25, 50, 100],
 
-  cardalis_benazepril_espironolactona:[2.5, 5, 10],
 
   colchicina:          [0.5, 0.6],
   guaifenesina:        [200, 400],
